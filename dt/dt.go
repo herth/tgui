@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"herth/tgui"
-	"herth/tgui/games"
 	"io/ioutil"
 	"os"
 	"sort"
+
+	"github.com/herth/tgui"
+	"github.com/herth/tgui/games"
 
 	"github.com/gdamore/tcell"
 )

@@ -1,7 +1,7 @@
 package games
 
 import (
-	"herth/tgui"
+	"github.com/herth/tgui"
 
 	"github.com/gdamore/tcell"
 )
