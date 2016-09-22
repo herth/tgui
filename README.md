@@ -1,4 +1,7 @@
 # tgui
+
+## Text Go User Interface ##
+
 A terminal based user interface written in Go
 
 To install:
