@@ -42,12 +42,6 @@ func makebox(s tcell.Screen) {
 	s.Show()
 }
 
-// func print(s tcell.Screen, x, y int, text string, st tcell.Style) {
-// 	for i, c := range text {
-// 		s.SetContent(x+i, y, c, nil, st)
-// 	}
-// }
-
 func Print(s tcell.Screen, x, y int, text string, st tcell.Style) {
 	for _, c := range text {
 		var comb []rune
@@ -149,9 +143,6 @@ type SimpleWin struct {
 }
 
 func (w *SimpleWin) Draw() {
-	// st := tcell.StyleDefault.
-	// 	Background(tcell.ColorLightGray).
-	// 	Foreground(tcell.ColorBlack)
 	for y := w.Y0; y <= w.Y1; y++ {
 		for x := w.X0; x <= w.X1; x++ {
 			w.App.Screen.SetContent(x, y, w.Fill, nil, w.Style)
@@ -434,12 +425,6 @@ func Clock(s tcell.Screen) {
 
 func EventHandle(app *App) {
 	screen := app.Screen
-	// ok := false
-	// defer func() {
-	// 	if !ok {
-	// 		screen.Fini()
-	// 	}
-	// }()
 	pressed := false
 	px := 0
 	py := 0
@@ -462,13 +447,6 @@ func EventHandle(app *App) {
 			case tcell.KeyRune:
 				rune := ev.Rune()
 				switch rune {
-				// case 'a':
-				// 	makebox(screen)
-				// 	screen.Show()
-				// case 'c':
-				// 	screen.Clear()
-				// 	screen.Show()
-				// 	//case 'q', 'Q':
 				default:
 					if app.RuneHandler != nil {
 						app.RuneHandler(rune)
@@ -490,22 +468,13 @@ func EventHandle(app *App) {
 			button := ev.Buttons()
 			highlightMenus(app, x, y)
 
-			// for i := uint(0); i < 8; i++ {
-			// 	if int(button)&(1<<i) != 0 {
-			// 		bstr += fmt.Sprintf(" Button%d", i+1)
-			// 	}
-			// }
 			// if button&tcell.WheelUp != 0 {
-			// 	bstr += " WheelUp"
 			// }
 			// if button&tcell.WheelDown != 0 {
-			// 	bstr += " WheelDown"
 			// }
 			// if button&tcell.WheelLeft != 0 {
-			// 	bstr += " WheelLeft"
 			// }
 			// if button&tcell.WheelRight != 0 {
-			// 	bstr += " WheelRight"
 			// }
 			// // Only buttons, not wheel events
 			button &= tcell.ButtonMask(0xff)
@@ -529,108 +498,6 @@ func EventHandle(app *App) {
 					px, py = x, y
 				}
 			}
-			//ch := '*'
-			// screen.ShowCursor(x, y)
-			// screen.Show()
-			// if button != tcell.ButtonNone && ox < 0 {
-			// 	ox, oy = x, y
-			// }
-			// switch ev.Buttons() {
-			// case tcell.ButtonNone:
-			// 	if ox >= 0 {
-			// 		bg := tcell.Color((lchar - '0') * 2)
-			// 		drawBox(s, ox, oy, x, y,
-			// 			up.Background(bg),
-			// 			lchar)
-			// 		ox, oy = -1, -1
-			// 		bx, by = -1, -1
-			// 	}
-			// case tcell.Button1:
-			// 	ch = '1'
-			// case tcell.Button2:
-			// 	ch = '2'
-			// case tcell.Button3:
-			// 	ch = '3'
-			// case tcell.Button4:
-			// 	ch = '4'
-			// case tcell.Button5:
-			// 	ch = '5'
-			// case tcell.Button6:
-			// 	ch = '6'
-			// case tcell.Button7:
-			// 	ch = '7'
-			// case tcell.Button8:
-			// 	ch = '8'
-			// default:
-			// 	ch = '*'
-
-			// }
-			// if button != tcell.ButtonNone {
-			// 	bx, by = x, y
-			// }
-			// lchar = ch
-
 		}
 	}
 }
-
-// func main() {
-// 	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
-// 	screen, e := tcell.NewScreen()
-// 	if e != nil {
-// 		fmt.Fprintf(os.Stderr, "%v\n", e)
-// 		os.Exit(1)
-// 	}
-// 	if e = screen.Init(); e != nil {
-// 		fmt.Fprintf(os.Stderr, "%v\n", e)
-// 		os.Exit(1)
-// 	}
-
-// 	ncolor := screen.Colors()
-// 	defer func() {
-// 		screen.Fini()
-// 		fmt.Printf("%d Colors\n", ncolor)
-// 		fmt.Printf("Goodbye\n")
-// 	}()
-
-// 	screen.SetStyle(tcell.StyleDefault.
-// 		Background(tcell.ColorBlack).
-// 		Foreground(tcell.ColorBlue))
-
-// 	_, h := screen.Size()
-// 	screen.ShowCursor(0, h-1)
-// 	screen.EnableMouse()
-// 	app := &App{Screen: screen, Background: tcell.StyleDefault.Background(tcell.NewRGBColor(80, 80, 80))}
-
-// 	mb := &MenuBar{Screen: screen}
-// 	//mb.AddMenu(Menu{Name: "≡"})
-// 	mb.AddMenu(Menu{Name: "="})
-// 	mb.AddMenu(Menu{Name: "File"})
-// 	mb.AddMenu(Menu{Name: "Edit"})
-// 	mb.AddMenu(Menu{Name: "Search"})
-// 	mb.AddMenu(Menu{Name: "Run"})
-// 	mb.AddMenu(Menu{Name: "Exit"})
-// 	app.MB = mb
-
-// 	app.AddWindow(&SimpleWin{App: app, Box: Box{2, 2, 40, 30}, Style: tcell.StyleDefault.Background(tcell.ColorLightGray)})
-// 	app.AddWindow(&SimpleWin{App: app, Box: Box{10, 12, 30, 22}, Fill: ' ', Style: tcell.StyleDefault.Background(tcell.ColorBlue)})
-// 	app.AddWindow(&DecoratedWin{Title: "foo", SimpleWin: SimpleWin{App: app, Box: Box{31, 12, 50, 22}, Fill: ' ', Style: tcell.StyleDefault.Background(tcell.ColorNavy)}})
-
-// 	app.AddWindow(&TextWin{Text: "foo\n\nbar\n\nbaz", DecoratedWin: DecoratedWin{Title: "foo", SimpleWin: SimpleWin{App: app, Box: Box{31, 12, 50, 22}, Fill: ' ', Style: tcell.StyleDefault.Background(tcell.ColorNavy).Foreground(tcell.ColorYellow)}}})
-
-// 	app.NewTextWin("foo", 31, 12, 20, 10, "foo\n\nbar\n\nbaz", tcell.StyleDefault.Background(tcell.ColorNavy).Foreground(tcell.ColorWhite))
-// 	app.NewTextWin("hallodri", 40, 40, 20, 10, "foo\n\nbar\n\nbaz", tcell.StyleDefault.Background(tcell.ColorMaroon).Foreground(tcell.ColorYellow))
-
-// 	for i := 0; i < 16; i++ {
-// 		app.AddWindow(&SimpleWin{App: app, Box: Box{1, i + 20, 30, i + 20}, Style: tcell.StyleDefault.Background(tcell.Color(i))})
-// 	}
-// 	app.AddWindow(&SimpleWin{App: app, Box: Box{51, 12, 70, 22}, Fill: ' ', Style: tcell.StyleDefault.Background(tcell.NewRGBColor(60, 60, 255))})
-// 	app.Draw()
-
-// 	go clock(screen)
-// 	screen.Show()
-
-// 	eventHandle(app)
-// 	//screen.Fini()
-
-// }
