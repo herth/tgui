@@ -306,7 +306,10 @@ func main() {
 
 	wt := games.NewTetris(app)
 	NewMC(app, "/etc/", 30, 10)
-	ls := NewMC(app, "/Users/herth/", 0, 1)
+
+	home := os.Getenv("HOME") + "/"
+
+	ls := NewMC(app, home, 0, 1)
 
 	app.Draw()
 
