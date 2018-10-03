@@ -9,6 +9,7 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
+// not used
 func makebox(s tcell.Screen) {
 	w, h := s.Size()
 
@@ -42,6 +43,7 @@ func makebox(s tcell.Screen) {
 	s.Show()
 }
 
+// print the text to the (x,y) coordinates of the screen.
 func Print(s tcell.Screen, x, y int, text string, st tcell.Style) {
 	for _, c := range text {
 		var comb []rune
@@ -56,6 +58,7 @@ func Print(s tcell.Screen, x, y int, text string, st tcell.Style) {
 	}
 }
 
+// Print the text up to a maximum X coordinate.
 func PrintM(s tcell.Screen, x, y int, maxX int, text string, st tcell.Style) {
 	for _, c := range text {
 		var comb []rune
@@ -94,7 +97,7 @@ func (m *MenuBar) AddMenu(menu Menu) {
 	for _, menu := range m.menus {
 		menu.X = x
 		menu.Y = y
-		menu.W = len(menu.Name) + 2 // fixme
+		menu.W = runewidth.StringWidth(menu.Name) + 2
 		x += menu.W
 	}
 }
@@ -135,6 +138,33 @@ type Window interface {
 	MMove(x, y int)
 }
 
+func DrawBorder(s tcell.Screen, b Box, style tcell.Style) {
+	x0 := b.X0
+	x1 := b.X1
+	y0 := b.Y0
+	y1 := b.Y1
+	s.SetContent(x0, y0, tcell.RuneULCorner, nil, style)
+	s.SetContent(x0, y1, tcell.RuneLLCorner, nil, style)
+	s.SetContent(x1, y1, tcell.RuneLRCorner, nil, style)
+	s.SetContent(x1, y0, tcell.RuneURCorner, nil, style)
+	for x := x0 + 1; x < x1; x++ {
+		s.SetContent(x, y0, tcell.RuneHLine, nil, style)
+		s.SetContent(x, y1, tcell.RuneHLine, nil, style)
+	}
+	for y := y0 + 1; y < y1; y++ {
+		s.SetContent(x0, y, tcell.RuneVLine, nil, style)
+		s.SetContent(x1, y, tcell.RuneVLine, nil, style)
+	}
+}
+
+func DrawBox(s tcell.Screen, b Box, r rune, style tcell.Style) {
+	for y := b.Y0; y <= b.Y1; y++ {
+		for x := b.X0; x <= b.X1; x++ {
+			s.SetContent(x, y, r, nil, style)
+		}
+	}
+}
+
 type SimpleWin struct {
 	*App
 	Box
@@ -143,11 +173,7 @@ type SimpleWin struct {
 }
 
 func (w *SimpleWin) Draw() {
-	for y := w.Y0; y <= w.Y1; y++ {
-		for x := w.X0; x <= w.X1; x++ {
-			w.App.Screen.SetContent(x, y, w.Fill, nil, w.Style)
-		}
-	}
+	DrawBox(w.App.Screen, w.Box, w.Fill, w.Style)
 }
 
 func (w *SimpleWin) Size() (int, int) {
@@ -173,27 +199,11 @@ type DecoratedWin struct {
 	Title string
 }
 
-func (w *SimpleWin) DrawRect(x0, y0, x1, y1 int, style tcell.Style) {
-	s := w.Screen
-	s.SetContent(x0, y0, tcell.RuneULCorner, nil, style)
-	s.SetContent(x0, y1, tcell.RuneLLCorner, nil, style)
-	s.SetContent(x1, y1, tcell.RuneLRCorner, nil, style)
-	s.SetContent(x1, y0, tcell.RuneURCorner, nil, style)
-	for x := x0 + 1; x < x1; x++ {
-		s.SetContent(x, y0, tcell.RuneHLine, nil, style)
-		s.SetContent(x, y1, tcell.RuneHLine, nil, style)
-	}
-	for y := y0 + 1; y < y1; y++ {
-		s.SetContent(x0, y, tcell.RuneVLine, nil, style)
-		s.SetContent(x1, y, tcell.RuneVLine, nil, style)
-	}
-}
-
 func (w *DecoratedWin) Draw() {
 	w.SimpleWin.Draw()
 	style := w.Style.Foreground(tcell.ColorYellow)
 	s := w.Screen
-	w.DrawRect(w.X0, w.Y0, w.X1, w.Y1, style)
+	DrawBorder(s, w.Box, style)
 	PrintM(s, w.X0+2, w.Y0, w.X1, w.Title, style)
 	for x := w.X0 + 1; x <= w.X1+1; x++ {
 		y := w.Y1 + 1
@@ -258,10 +268,7 @@ func (m *MenuBar) Draw() {
 	r := st.Foreground(tcell.ColorRed)
 	for i := 0; i < w; i++ {
 		s.SetContent(i, 0, ' ', nil, st)
-		//s.SetContent(i, h-2, ' ', nil, st)
 	}
-	// Print(s, 1, 0, "≡", r)
-	//x := 3
 	for _, item := range m.menus {
 		name := item.Name
 		st := st
@@ -275,7 +282,6 @@ func (m *MenuBar) Draw() {
 		Print(s, item.X+2, 0, name[1:], st)
 		Print(s, item.X+item.W-1, item.Y, " ", st)
 	}
-	//Print(s, 1, 0, "= File  Edit  Search  Run ", st)
 }
 
 func (a *App) Draw() {

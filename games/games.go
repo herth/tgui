@@ -89,8 +89,8 @@ func (w *Tetris) DrawStone(stone Stone, px, py int) {
 func (w *Tetris) Draw() {
 	w.SimpleWin.Draw()
 	st := tcell.StyleDefault.Background(tcell.ColorBlack).Foreground(tcell.ColorNavy)
-	w.DrawRect(w.X0, w.Y0+1, w.X0+w.Width*2+1, w.Y0+1+w.Height+1, st)
-	w.DrawRect(w.X0+w.Width*2+2, w.Y0+1, w.X0+w.Width*2+11, w.Y0+6, st)
+	tgui.DrawBorder(w.Screen, tgui.Box{w.X0, w.Y0 + 1, w.X0 + w.Width*2 + 1, w.Y0 + 1 + w.Height + 1}, st)
+	tgui.DrawBorder(w.Screen, tgui.Box{w.X0 + w.Width*2 + 2, w.Y0 + 1, w.X0 + w.Width*2 + 11, w.Y0 + 6}, st)
 
 	for y := 0; y < w.Height; y++ {
 		for x := 0; x < w.Width; x++ {
